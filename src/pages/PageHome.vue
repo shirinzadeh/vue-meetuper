@@ -11,124 +11,12 @@
           </button>
           <button class="button is-primary is-pulled-right m-r-sm">All</button>
         </div>
-        <div class="row columns">
-          <div class="column is-one-third">
-            <div class="card large">
-              <div class="card-image">
-                <figure class="image is-4by3">
-                  <img
-                    src="https://images.unsplash.com/photo-1475778057357-d35f37fa89dd?dpr=1&auto=compress,format&fit=crop&w=1920&h=&q=80&cs=tinysrgb&crop="
-                    alt="Image"
-                  />
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="level m-b-md">
-                  <div class="media-left">
-                    <div class="level-item has-text-centered">
-                      <div>
-                        <p class="title">JAN</p>
-                        <p class="title">16</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="media-content">
-                    <p class="title is-4 no-padding is-marginless">
-                      Beer and Burger in Hamburg
-                    </p>
-                    <!-- <p><span class="title is-6"><a href="http://twitter.com/#">@twitterid</a></span></p> -->
-                    <span class="tag is-success">Music</span>
-                    <p class="subtitle is-7">Tomorrow · Times Square · 05201</p>
-                  </div>
-                </div>
-                <div class="content">
-                  The Beast stumbled in the dark for it could no longer see the
-                  path...
-                  <div class="background-icon">
-                    <span class="icon-twitter"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column is-one-third">
-            <div class="card large">
-              <div class="card-image">
-                <figure class="image is-4by3">
-                  <img
-                    src="https://source.unsplash.com/uzDLtlPY8kQ"
-                    alt="Image"
-                  />
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="level m-b-md">
-                  <div class="media-left">
-                    <div class="level-item has-text-centered">
-                      <div>
-                        <p class="title">JAN</p>
-                        <p class="title">16</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="media-content">
-                    <p class="title is-4 no-padding is-marginless">
-                      Beer and Burger in Hamburg
-                    </p>
-                    <!-- <p><span class="title is-6"><a href="http://twitter.com/#">@twitterid</a></span></p> -->
-                    <span class="tag is-success">Music</span>
-                    <p class="subtitle is-7">Tomorrow · Times Square · 05201</p>
-                  </div>
-                </div>
-                <div class="content">
-                  The Beast stumbled in the dark for it could no longer see the
-                  path...
-                  <div class="background-icon">
-                    <span class="icon-facebook"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column is-one-third">
-            <div class="card large">
-              <div class="card-image">
-                <figure class="image is-4by3">
-                  <img
-                    src="https://source.unsplash.com/pe_R74hldW4"
-                    alt="Image"
-                  />
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="level m-b-md">
-                  <div class="media-left">
-                    <div class="level-item has-text-centered">
-                      <div>
-                        <p class="title">JAN</p>
-                        <p class="title">16</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="media-content">
-                    <p class="title is-4 no-padding is-marginless">
-                      Beer and Burger in Hamburg
-                    </p>
-                    <!-- <p><span class="title is-6"><a href="http://twitter.com/#">@twitterid</a></span></p> -->
-                    <span class="tag is-success">Music</span>
-                    <p class="subtitle is-7">Tomorrow · Times Square · 05201</p>
-                  </div>
-                </div>
-                <div class="content">
-                  The Beast stumbled in the dark for it could no longer see the
-                  path...
-                  <div class="background-icon">
-                    <span class="icon-barcode"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="row columns is-multiline">
+          <MeetupItem
+            v-for="meetup in meetups"
+            :key="meetup._id"
+            :meetup="meetup"
+          />
         </div>
       </section>
       <section class="section">
@@ -150,18 +38,24 @@
 <script>
 /**axios is js package that sending request very simple. axios is promise based. this, we receive promise */
 import axios from "axios";
+import MeetupItem from "@/components/MeetupItem";
 import CategoryItem from "@/components/CategoryItem";
 
 export default {
   components: {
+    MeetupItem,
     CategoryItem,
   },
   data() {
     return {
+      meetups: [],
       categories: [],
     };
   },
   created() {
+    axios.get("/api/v1/meetups").then((res) => {
+      this.meetups = res.data;
+    });
     /**db-daki datani bu sekilde alaraq, categories arrayine beraber edirik
      *url http://localhost:8080/api/v1/categories olacaq. ancaq PORTu 3001 verdiyimize gore, localhostu deyisib 3001 etmeliyik.
        Buna gore vue.config.js faylini yaradiriq
