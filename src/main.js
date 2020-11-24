@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
+import router from './router'/**faylin adi index.js olduguna gore, ./router/index.js yazmaga ehtiyac yoxdur. cunki avtomatik import edir */
+
 import AppDropdown from './components/shared/AppDropdown'
 import AppHero from './components/shared/AppHero'
 
@@ -27,5 +29,6 @@ Vue.filter('formatDate', function (value, formatType = "LL") {
 })
 
 new Vue({
+  router,
   render: h => h(App),
 }).$mount('#app')

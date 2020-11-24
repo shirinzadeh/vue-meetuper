@@ -1,6 +1,18 @@
 <template>
+  <!-- use router-link component for navigation. -->
+  <!-- specify the link by passing the `to` prop. -->
+  <!-- `<router-link>` will be rendered as an `<a>` tag by default -->
+
+  <!-- <router-link :to="'/meetups/' + meetup._id" class="column is-one-third"> -->
+  <!-- :to bu formada yazanda, routerda pathi ne vaxtsa deyissek ve ya /:id-den sonra /foo (/meetups/:id/foo) elave etsek meetupdetaile girmeyecek -->
+
+  <!-- params:{id:} -- burdaki id routerda pathde /meetup-dan sonra yazdigimizla eyni olmalidir. 
+        yeni orda id yazdigimiz ucun burda da id yaziriq ve id-ni meetupin id-si ile evezleyirik -->
   <div class="column is-one-third">
-    <div class="card large">
+    <router-link
+      :to="{ name: 'PageMeetupDetail', params: { id: meetup._id } }"
+      class="card large"
+    >
       <div class="card-image">
         <figure class="image is-4by3">
           <img :src="meetup.image" alt="Image" />
@@ -36,7 +48,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
