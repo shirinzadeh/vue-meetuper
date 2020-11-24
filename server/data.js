@@ -30,7 +30,7 @@ const category5Id = mongoose.Types.ObjectId();
 
 module.exports = {
   "meetups": [
-     {
+    {
       "_id": meetup1Id,
       "location": "Bratislava, SK",
       "processedLocation": "bratislavask",
@@ -259,7 +259,7 @@ module.exports = {
       "_id": category1Id,
       "name": "sport",
       "image": "https://images.unsplash.com/photo-1508355991726-ebd81e4802f7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1506&q=80"
-    },{
+    }, {
       "_id": category2Id,
       "name": "cinema",
       "image": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
