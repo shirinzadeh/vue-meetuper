@@ -151,34 +151,35 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios"; Vuexden sonra ehtiyac yoxdur
 
 export default {
-  data() {
-    return {
-      meetup: {},
-      threads: [],
-    };
+  // data() {
+  //   return {
+  //     meetup: {},
+  //     threads: [],
+  //   };
+  // },
+  computed: {
+    meetup() {
+      return this.$store.state.meetup;
+    },
+    threads() {
+      return this.$store.state.threads;
+    },
+    meetupCreator() {
+      return this.meetup.meetupCreator || {};
+    },
   },
   created() {
     // By injecting the router, we get access to it as this.$router as well as the current route as this.$route inside of any component
     /**$route-un icinde path, query,params,name ve s. var. this.$route.params.id yazib, params objectindeki id-ni aliriq */
-    const meetupId = this.$route.params.id;
-
-    axios.get(`/api/v1/meetups/${meetupId}`).then((res) => {
-      this.meetup = res.data;
-    });
-
     /**?-dan sonra query parametr gelir. ?-dan sonraki meetupId /controllers/threads.js-deki meetupId-dir.
      * hemin  meetupId-ni actual meetupid-ye beraber edirik*/
-    axios.get(`/api/v1/threads?meetupId=${meetupId}`).then((res) => {
-      return (this.threads = res.data);
-    });
-  },
-  computed: {
-    meetupCreator() {
-      return this.meetup.meetupCreator || "";
-    },
+
+    const meetupId = this.$route.params.id;
+    this.$store.dispatch("fetchMeetupById", meetupId);
+    this.$store.dispatch("fetchThreads", meetupId);
   },
 };
 </script>

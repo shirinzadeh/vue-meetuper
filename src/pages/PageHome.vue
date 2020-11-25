@@ -41,7 +41,7 @@
 
 <script>
 /**axios is js package that sending request very simple. axios is promise based. this, we receive promise */
-import axios from "axios";
+// import axios from "axios"; Vuexden sonra ehtiyac yoxdur
 import MeetupItem from "@/components/MeetupItem";
 import CategoryItem from "@/components/CategoryItem";
 
@@ -60,10 +60,10 @@ export default {
   computed: {
     meetups() {
       //we need to acces getters in [ ]. getters is object
-      return this.$store.getters["meetups"];
+      return this.$store.state.meetups;
     },
     categories() {
-      return this.$store.getters["categories"];
+      return this.$store.state.categories;
     },
   },
   created() {
