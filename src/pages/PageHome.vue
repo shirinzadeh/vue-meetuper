@@ -50,23 +50,35 @@ export default {
     MeetupItem,
     CategoryItem,
   },
-  data() {
-    return {
-      meetups: [],
-      categories: [],
-    };
+  /**datalari vuexde yerlesdirenden ssonra burdan silirik, yerine computed property yazilir. we assign data differently */
+  // data() {
+  //   return {
+  //     meetups: [],
+  //     categories: [],
+  //   };
+  // },
+  computed: {
+    meetups() {
+      //we need to acces getters in [ ]. getters is object
+      return this.$store.getters["meetups"];
+    },
+    categories() {
+      return this.$store.getters["categories"];
+    },
   },
   created() {
-    axios.get("/api/v1/meetups").then((res) => {
-      this.meetups = res.data;
-    });
     /**db-daki datani bu sekilde alaraq, categories arrayine beraber edirik
      *url http://localhost:8080/api/v1/categories olacaq. ancaq PORTu 3001 verdiyimize gore, localhostu deyisib 3001 etmeliyik.
        Buna gore vue.config.js faylini yaradiriq
      */
-    axios.get("/api/v1/categories").then((res) => {
-      this.categories = res.data;
-    });
+
+    /**!!!!!!!!!!!! axios.get() meetup ve categories burdan cut edib, vuex-de paste edildi
+     * Ve vuex-deki action-u burda cagiririq
+     */
+
+    //to call the action we use dispatch function in $store
+    this.$store.dispatch("fetchMeetups");
+    this.$store.dispatch("fetchCategories");
   },
 };
 </script>
