@@ -61,18 +61,20 @@
               <!-- Threads Start -->
               <p class="menu-label">Threads</p>
               <ul>
-                <li>Should I follow some dresscode ?</li>
+                <li v-for="thread in threads" :key="thread._id">
+                  {{ thread.title }}
+                </li>
               </ul>
               <p class="menu-label">Who is Going</p>
               <div class="columns is-multiline is-mobile">
                 <!-- Joined People Images Here -->
-                <div class="column is-3">
+                <div
+                  v-for="person in meetup.joinedPeople"
+                  :key="person._id"
+                  class="column is-3"
+                >
                   <figure class="image is-64x64">
-                    <img
-                      class="is-rounded"
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuqyc3j2s3bL4DIkC8uC9h0rcAdsDXcwJPNh8XHWbLQfHbOpVU"
-                      alt="Image"
-                    />
+                    <img class="is-rounded" :src="person.avatar" alt="Image" />
                   </figure>
                 </div>
               </div>
@@ -92,10 +94,10 @@
             <!-- Thread List START -->
             <div class="content is-medium">
               <h3 class="title is-3">Threads</h3>
-              <div class="box">
+              <div v-for="thread in threads" :key="thread._id" class="box">
                 <!-- Thread title -->
                 <h4 id="const" class="title is-3">
-                  Should I follow some dresscode ?
+                  {{ thread.title }}
                 </h4>
                 <!-- Create new post, handle later -->
                 <form class="post-create">
@@ -112,24 +114,27 @@
                 </form>
                 <!-- Create new post END, handle later -->
                 <!-- Posts START -->
-                <article class="media post-item">
+                <article
+                  v-for="post in thread.posts"
+                  :key="post._id"
+                  class="media post-item"
+                >
                   <figure class="media-left is-rounded user-image">
                     <p class="image is-32x32">
-                      <img
-                        class="is-rounded"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuqyc3j2s3bL4DIkC8uC9h0rcAdsDXcwJPNh8XHWbLQfHbOpVU"
-                      />
+                      <img class="is-rounded" :src="post.user.avatar" />
                     </p>
                   </figure>
                   <div class="media-content">
                     <div class="content is-medium">
                       <div class="post-content">
                         <!-- Post User Name -->
-                        <strong class="author">Filip Jerga</strong>
+                        <strong class="author">{{ post.user.name }}</strong>
                         <!-- Post Updated at -->
-                        <small class="post-time">13th Jan</small>
+                        <small class="post-time">{{
+                          post.updatedAt | formatDate("LLL")
+                        }}</small>
                         <br />
-                        <p class="post-content-message">It's up to you (:</p>
+                        <p class="post-content-message">{{ post.text }}</p>
                       </div>
                     </div>
                   </div>
@@ -152,21 +157,27 @@ export default {
   data() {
     return {
       meetup: {},
+      threads: [],
     };
   },
   created() {
     // By injecting the router, we get access to it as this.$router as well as the current route as this.$route inside of any component
-    /**$route-un icinde path, query,params,name ve s. var. this.$route.params.id yazib, params objectindeki id */
+    /**$route-un icinde path, query,params,name ve s. var. this.$route.params.id yazib, params objectindeki id-ni aliriq */
     const meetupId = this.$route.params.id;
-    console.log(meetupId);
 
     axios.get(`/api/v1/meetups/${meetupId}`).then((res) => {
       this.meetup = res.data;
     });
+
+    /**?-dan sonra query parametr gelir. ?-dan sonraki meetupId /controllers/threads.js-deki meetupId-dir.
+     * hemin  meetupId-ni actual meetupid-ye beraber edirik*/
+    axios.get(`/api/v1/threads?meetupId=${meetupId}`).then((res) => {
+      return (this.threads = res.data);
+    });
   },
   computed: {
     meetupCreator() {
-      return this.meetup.meetupCreator;
+      return this.meetup.meetupCreator || "";
     },
   },
 };
