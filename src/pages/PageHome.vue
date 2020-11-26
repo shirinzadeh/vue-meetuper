@@ -44,6 +44,7 @@
 // import axios from "axios"; Vuexden sonra ehtiyac yoxdur
 import MeetupItem from "@/components/MeetupItem";
 import CategoryItem from "@/components/CategoryItem";
+import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
@@ -58,27 +59,40 @@ export default {
   //   };
   // },
   computed: {
-    meetups() {
-      //we need to acces getters in [ ]. getters is object
-      return this.$store.state.meetups;
-    },
-    categories() {
-      return this.$store.state.categories;
-    },
+    /**mappingden sonra silinir */
+    // meetups() {
+    //   //we need to acces getters in [ ]. getters is object
+    //   return this.$store.state.meetups;
+    // },
+    // categories() {
+    //   return this.$store.state.categories;
+    // },
+    ...mapState({
+      meetups: (state) => state.meetups,
+      categories: (state) => state.categories,
+    }),
   },
   created() {
     /**db-daki datani bu sekilde alaraq, categories arrayine beraber edirik
      *url http://localhost:8080/api/v1/categories olacaq. ancaq PORTu 3001 verdiyimize gore, localhostu deyisib 3001 etmeliyik.
        Buna gore vue.config.js faylini yaradiriq
      */
-
     /**!!!!!!!!!!!! axios.get() meetup ve categories burdan cut edib, vuex-de paste edildi
      * Ve vuex-deki action-u burda cagiririq
      */
-
+    /**mappingden sonra dispatch()ler silinir */
     //to call the action we use dispatch function in $store
-    this.$store.dispatch("fetchMeetups");
-    this.$store.dispatch("fetchCategories");
+    // this.$store.dispatch("fetchMeetups");
+    // this.$store.dispatch("fetchCategories");
+    this.fetchMeetups();
+    this.fetchCategories();
+  },
+  methods: {
+    /**store index.js-de declare olan fetchmeetupsla, fetchcategoriesdir.
+     * Vuex index.js-e baxib, fetchmeetupsla, fetchcategoriesi tapacaq ve olari created()-de bind edecek.
+     * ona gore created-de this.fetchMeetups() yazilir
+     */
+    ...mapActions(["fetchMeetups", "fetchCategories"]),
   },
 };
 </script>
