@@ -79,13 +79,15 @@
 <script>
 // import axios from "axios"; Vuex-den sonra ehtiyac yoxdur
 export default {
+  /** burda kodlar sade olduguna gore mapping etmedik */
   computed: {
     meetups() {
-      return this.$store.state.meetups;
+      return this.$store.state.meetups.items;
     },
   },
   created() {
-    this.$store.dispatch("fetchMeetups");
+    /** sadece dispatch edende de modules adi slash(/) cagiracagimiz function yaziriq */
+    this.$store.dispatch("meetups/fetchMeetups");
   },
 };
 </script>

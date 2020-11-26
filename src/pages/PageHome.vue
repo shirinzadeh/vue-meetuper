@@ -68,8 +68,13 @@ export default {
     //   return this.$store.state.categories;
     // },
     ...mapState({
-      meetups: (state) => state.meetups,
-      categories: (state) => state.categories,
+      /**burda da modules elave edilenden sonra kod deyisilir. Cunki artiq state.meetups-daki meetups data yox, modulesdur.
+       * Hemin datani da items elave ederek elde edirik
+       */
+      // meetups: (state) => state.meetups,
+      // categories: (state) => state.categories,
+      meetups: (state) => state.meetups.items,
+      categories: (state) => state.categories.items,
     }),
   },
   created() {
@@ -92,7 +97,12 @@ export default {
      * Vuex index.js-e baxib, fetchmeetupsla, fetchcategoriesi tapacaq ve olari created()-de bind edecek.
      * ona gore created-de this.fetchMeetups() yazilir
      */
-    ...mapActions(["fetchMeetups", "fetchCategories"]),
+
+    /**modules elave edenden sonra bu kod da deyisilir. cunki bu kodda storedaki index.js-e baxilir. 
+      artiq fetchmeetupsla fetchcategories index.jsde de olmadigi ucun, bu kod islemir. Ona gore yeni module adini mapactions-a daxil edirik*/
+    // ...mapActions(["fetchMeetups", "fetchCategories"]),
+    ...mapActions("meetups", ["fetchMeetups"]),
+    ...mapActions("categories", ["fetchCategories"]),
   },
 };
 </script>
