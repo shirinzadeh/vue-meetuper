@@ -80,8 +80,16 @@
                     placeholder="Avatar"
                     autocomplete=""
                   />
-                  <div v-if="!$v.form.avatar.url" class="help is-danger">
-                    Url link is invalid
+                  <div v-if="$v.form.avatar.$error" class="form-error">
+                    <div v-if="!$v.form.avatar.url" class="help is-danger">
+                      Url link is invalid
+                    </div>
+                    <div
+                      v-if="!$v.form.avatar.supportedFileType"
+                      class="help is-danger"
+                    >
+                      File type must be one of .jpg, .png, .jpeg
+                    </div>
                   </div>
                 </div>
               </div>
@@ -168,6 +176,7 @@ import {
   sameAs,
   url,
 } from "vuelidate/lib/validators";
+import { supportedFileType } from "@/helpers/validators";
 
 export default {
   data() {
@@ -192,6 +201,7 @@ export default {
       email: { required, email },
       avatar: {
         url,
+        supportedFileType,
       },
       password: {
         required,
