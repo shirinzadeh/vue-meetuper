@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="container">
+    <div v-if="pageLoader_isDataLoaded" class="container">
       <section class="section page-find">
         <div class="columns cover is-multiline">
           <div
@@ -73,12 +73,17 @@
         </div>
       </section>
     </div>
+    <div v-else>
+      <AppSpinner />
+    </div>
   </div>
 </template>
 
 <script>
 // import axios from "axios"; Vuex-den sonra ehtiyac yoxdur
+import pageLoader from "@/mixins/pageLoader";
 export default {
+  mixins: [pageLoader],
   /** burda kodlar sade olduguna gore mapping etmedik */
   computed: {
     meetups() {
@@ -87,7 +92,15 @@ export default {
   },
   created() {
     /** sadece dispatch edende de modules adi slash(/) cagiracagimiz function yaziriq */
-    this.$store.dispatch("meetups/fetchMeetups");
+    this.$store
+      .dispatch("meetups/fetchMeetups")
+      .then((result) => {
+        this.pageLoader_resolveData();
+      })
+      .catch((err) => {
+        console.log(err);
+        pageLoader_resolveData();
+      });
   },
 };
 </script>

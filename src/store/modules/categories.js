@@ -10,12 +10,14 @@ export default {
   },
   actions: {
     fetchCategories({ state, commit }) {
-      axios.get("/api/v1/categories").then((res) => {
+      /**return yazmayanda promise return elemir deye PageHome-da fetchcategories-e then() elave edende data qaytarmir */
+      return axios.get("/api/v1/categories").then((res) => {
         const categories = res.data;
         /**setItems-leri burda cagiririq amma setItem index.js-in mutationdadir. 
          * root: true yazaraq, index.js-deki mutation-i cagiririq */
         commit('setItems', { resource: 'categories', items: categories }, { root: true })
-        return state.categories
+        // return state.categories
+        return state.items
       });
     },
   },

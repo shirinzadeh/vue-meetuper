@@ -1,7 +1,7 @@
 <template>
   <div>
     <AppHero />
-    <div class="container">
+    <div v-if="pageLoader_isDataLoaded" class="container">
       <section class="section">
         <div class="m-b-lg">
           <h1 class="title is-inline">Featured Meetups in "Location"</h1>
@@ -36,6 +36,9 @@
         </div>
       </section>
     </div>
+    <div v-else class="container">
+      <AppSpinner />
+    </div>
   </div>
 </template>
 
@@ -45,19 +48,23 @@
 import MeetupItem from "@/components/MeetupItem";
 import CategoryItem from "@/components/CategoryItem";
 import { mapState, mapActions } from "vuex";
+import pageLoader from "@/mixins/pageLoader";
 
 export default {
   components: {
     MeetupItem,
     CategoryItem,
   },
-  /**datalari vuexde yerlesdirenden ssonra burdan silirik, yerine computed property yazilir. we assign data differently */
-  // data() {
-  //   return {
-  //     meetups: [],
-  //     categories: [],
-  //   };
-  // },
+  mixins: [pageLoader],
+  data() {
+    return {
+      /**meetups ve categories-i vuexde yerlesdirenden ssonra burdan silirik, yerine computed property yazilir. we assign data differently */
+      // meetups: [],
+      // categories: [],
+      /**mixin kimi yazandan sonra buradan silirik */
+      // isDataLoaded: false,
+    };
+  },
   computed: {
     /**mappingden sonra silinir */
     // meetups() {
@@ -89,8 +96,35 @@ export default {
     //to call the action we use dispatch function in $store
     // this.$store.dispatch("fetchMeetups");
     // this.$store.dispatch("fetchCategories");
-    this.fetchMeetups();
-    this.fetchCategories();
+
+    /**Datalar yukleyende millisaniyelik de olsa gecikme olur. Hemin gecikme zamani spinnerin gorsenmesi lazimdi.
+     * Demeli spinneri data yuklenende gorsedeceyik. Ona gore de fetchMeetupsla categories-e then bloku verib, datani aliriq
+     */
+    //When fetchmeetups are resolved it jumps to then function. then we call fetchcategories and return result of fetchcategories.
+    //When fetchcategories are resolved we chain another then. So, data are fetched and we set isdataloaded true
+    /**!!!! BUNUN YERINE Promise.all() ILE DE YAZMAQ OLAR */
+    // this.fetchMeetups()
+    //   .then(() => {
+    //     return this.fetchCategories();
+    //   })
+    //   .then(() => {
+    //     this.isDataLoaded = true;
+    //   });
+    /**all() icerisinde girdiyimiz functionlarin hamisinin resolve olandan sonra then bloku ile result-i qaytarir.
+     * Meselen, fetchMeetups() state.items return edir. items de meetupsdi(bax meetups.js). Demeli then bloku icinde bize meetups qayidir
+     *  Qisaca, then() bloku icerisinde 2 array qaytarir. birinin icinde meetups, dierinde categories
+     * Data qayidana qeder de isDataloaded default false olduguna gore, sehife yox spinner gorsenir
+     */
+    Promise.all([this.fetchMeetups(), this.fetchCategories()])
+      .then((results) => {
+        // this.isDataLoaded = true;
+        this.pageLoader_resolveData();
+      })
+      .catch((err) => {
+        console.log(err);
+        // this.isDataLoaded = true;
+        this.pageLoader_resolveData();
+      });
   },
   methods: {
     /**store index.js-de declare olan fetchmeetupsla, fetchcategoriesdir.

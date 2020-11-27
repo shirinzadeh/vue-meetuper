@@ -17,10 +17,12 @@ export default {
       /**setItems-leri burda cagiririq amma setItem index.js-in mutationdadir. 
         *root: true yazaraq, index.js-deki mutation-i cagiririq */
       commit('setItems', { resource: 'meetups', items: {} }, { root: true })
-      axios.get("/api/v1/meetups").then((res) => {
+      /**return yazmayanda promise return elemir deye PageHome-da fetchcategories-e then() elave edende data qaytarmir */
+      return axios.get("/api/v1/meetups").then((res) => {
         const meetups = res.data;
         commit('setItems', { resource: 'meetups', items: meetups }, { root: true })
-        return state.meetups
+        // return state.meetups
+        return state.items
       });
     },
     fetchMeetupById({ state, commit }, meetupId) {
@@ -28,10 +30,10 @@ export default {
        * ancaq modulesdan sonra meetup-i da meetups modulu daxilinde yazdigimiza gore, resource-umuz meetups modules olur ve buna gore
         commit-deki resource-u da meetups etmeliyik*/
       commit('setItem', { resource: 'meetups', item: {} }, { root: true })
-      axios.get(`/api/v1/meetups/${meetupId}`).then((res) => {
+      return axios.get(`/api/v1/meetups/${meetupId}`).then((res) => {
         const meetup = res.data;
         commit('setItem', { resource: 'meetups', item: meetup }, { root: true })
-        return state.meetup = meetup
+        return state.item
       });
     },
   },
