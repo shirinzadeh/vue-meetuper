@@ -10,7 +10,7 @@ export default {
   },
   actions: {
     fetchCategories({ state, commit }) {
-      /**return yazmayanda promise return elemir deye PageHome-da fetchcategories-e then() elave edende data qaytarmir */
+      /**return axios yazmayanda promise return elemir deye PageHome-da fetchcategories-e then() elave edende data qaytarmir */
       return axios.get("/api/v1/categories").then((res) => {
         const categories = res.data;
         /**setItems-leri burda cagiririq amma setItem index.js-in mutationdadir. 
