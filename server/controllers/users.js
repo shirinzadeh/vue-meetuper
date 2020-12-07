@@ -48,7 +48,10 @@ exports.register = function (req, res) {
   })
 }
 
-exports.login = function (req, res) {
+/* ************
+2. CHECK LOGIN CREDENTIALS (davamı passport.js-də)
+***************/
+exports.login = function (req, res, next) {
   const { email, password } = req.body
 
   if (!email) {
@@ -67,9 +70,38 @@ exports.login = function (req, res) {
   }
   //local method is authentication with email and password
   //in callback we get an error or logged user
+  //local is localstrategy
+  //(err, passportUser) => { .... } is done() function(passport.js)
   return passport.authenticate('local', (err, passportUser) => {
+    //if we have error call next middleware, so next function
+    if (err) {
+      return next(err)
+    }
 
-  })
+    if (passportUser) {
+      /*we have login() function thanks to passport. 
+      After register passport.initialize() and passport.session() in index.js, login() is availabed*/
+      //this will execute serialize function. we will get inside serialize(passport.js)
+      req.login(passportUser, function (err) {
+        if (err) { next(err); }
 
-  return res.json({ status: "OK" })
+        return res.json(passportUser)
+      });
+    } else {
+      return res.status(422).send({
+        errors: {
+          'authentication': 'Ooops, something went wrong!'
+        }
+      })
+    }
+  })(req, res, next)
+  /* 
+  SAME CODE :
+  const auth = passort.authenticate(.....){}
+  auth(req,res,next) 
+  
+  function animals(dog) {
+    console.log(dog)
+  } 
+  animals()('Rex') ---it will console Rex  */
 }
