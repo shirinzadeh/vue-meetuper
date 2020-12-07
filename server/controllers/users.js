@@ -105,3 +105,9 @@ exports.login = function (req, res, next) {
   } 
   animals()('Rex') ---it will console Rex  */
 }
+
+//LOGOUT
+exports.logout = function (req, res) {
+  req.logout()
+  return res.json({ status: 'Session destroyed!' })
+}
