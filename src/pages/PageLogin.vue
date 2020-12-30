@@ -107,7 +107,10 @@ export default {
       //After activate vuelidate and provide validation we access this.$v
       //$touch() - Activate validation of form
       this.$v.form.$touch();
-      this.$store.dispatch("auth/loginWithEmailAndPassword", this.form);
+      this.$store
+        .dispatch("auth/loginWithEmailAndPassword", this.form)
+        .then(() => this.$router.push("/"))
+        .catch((err) => console.log(err));
     },
   },
 };

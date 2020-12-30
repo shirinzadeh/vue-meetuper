@@ -1,3 +1,4 @@
+// Auth Middleware
 exports.onlyAuthUser = function (req, res, next) {
   if (req.isAuthenticated()) {
     /** burda next function yazmaqda sebeb, if user authenticated routes/meetups.js-daki /secret get eden routerde 

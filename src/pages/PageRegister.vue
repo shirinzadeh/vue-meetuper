@@ -217,7 +217,11 @@ export default {
   methods: {
     register() {
       this.$v.form.$touch();
-      this.$store.dispatch("auth/registerUser", this.form);
+      this.$store
+        .dispatch("auth/registerUser", this.form)
+        //redirect to login page after push userData (modules/auth.js)
+        .then(() => this.$router.push("/login"))
+        .catch((err) => console.error(err));
     },
   },
 };
