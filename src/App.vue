@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div v-if="isAuthResolved" id="app">
     <TheNavbar />
     <!-- routing etdikden sonra PageHome hem templateden, hem importdan, hem componentsden silinir -->
     <!-- <PageHome /> -->
@@ -18,6 +18,14 @@ export default {
     // PageHome,
     TheNavbar,
     TheFooter,
+  },
+  computed: {
+    isAuthResolved() {
+      return this.$store.state.auth.isAuthResolved;
+    },
+  },
+  created() {
+    this.$store.dispatch("auth/getAuthUser");
   },
 };
 </script>
