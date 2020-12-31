@@ -1,4 +1,17 @@
 import axios from 'axios';
+import jwt from 'jsonwebtoken'
+import axiosInstance from '@/services/axios'
+
+function checkTokenValidity(token) {
+  if (token) {
+    const decodedToken = jwt.decode(token)
+    //exp is expiration time of token. 
+    /**exp token saxlanilan objectde yerlesir */
+    return decodedToken && (decodedToken.exp * 1000) > new Date().getTime()
+  }
+
+  return false
+}
 import { auth } from 'firebase-admin';
 export default {
   namespaced: true,
@@ -21,6 +34,8 @@ export default {
       return axios.post('/api/v1/users/login', userData).then(res => {
         //authenticated user
         const user = res.data
+        //get token
+        localStorage.setItem('meetuper-jwt', user.token)
         context.commit('setAuthUser', user)
       })
     },
@@ -35,7 +50,11 @@ export default {
     getAuthUser({ commit, getters }) {
       const authUser = getters['authUser']
       /* authUser promise olaraq qaytarmaliyiq. cunki  router/index-de authUser is expecting to get promise*/
-      if (authUser) { return Promise.resolve(authUser) }
+      // if (authUser) { return Promise.resolve(authUser) }
+      const token = localStorage.getItem('meetuper-jwt')
+      const isTokenValid = checkTokenValidity(token)
+
+      if (authUser && isTokenValid) { return Promise.resolve(authUser) }
       /**logout edib yeniden evvelki sehifeye qayidanda yene login olur.cunki user melumati cachde qalir
        * bunun olmamasi ucun bu kod yazilir
        */
@@ -44,9 +63,11 @@ export default {
           'Cache-Control': 'no-cache'
         }
       }
-      return axios.get('/api/v1/users/me', config)
+      // return axios.get('/api/v1/users/me', config)
+      return axiosInstance.get('/api/v1/users/me', config)
         .then((res) => {
           const user = res.data
+          localStorage.setItem('meetuper-jwt', user.token)
           commit('setAuthUser', user)
           commit('setAuthState', true)
           return user
