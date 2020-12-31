@@ -28,8 +28,23 @@ export default {
       return axios.post('/api/v1/users/register', userData)
     },
     /**app.vue-da request gonderirik */
-    getAuthUser({ commit }) {
-      return axios.get('/api/v1/users/me')
+    /** her defe ferqli sehifelere kecende /api/v1/users/me-den login olan userin melumatini gonderir(network tabdan bax)
+     * ona gore de getAuthUsere gettersi elave edirik ki eger authuser varsa, bir de axiosla get etmesin
+     */
+    // getAuthUser({ commit }) {
+    getAuthUser({ commit, getters }) {
+      const authUser = getters['authUser']
+      /* authUser promise olaraq qaytarmaliyiq. cunki  router/index-de authUser is expecting to get promise*/
+      if (authUser) { return Promise.resolve(authUser) }
+      /**logout edib yeniden evvelki sehifeye qayidanda yene login olur.cunki user melumati cachde qalir
+       * bunun olmamasi ucun bu kod yazilir
+       */
+      const config = {
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      }
+      return axios.get('/api/v1/users/me', config)
         .then((res) => {
           const user = res.data
           commit('setAuthUser', user)
