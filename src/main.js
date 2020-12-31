@@ -2,8 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'/**faylin adi index.js olduguna gore, ./router/index.js yazmaga ehtiyac yoxdur. cunki avtomatik import edir */
 import store from './store'
-//for form validation
 import vuelidate from 'vuelidate'
+import Toasted from 'vue-toasted';
 
 import AppDropdown from './components/shared/AppDropdown'
 import AppHero from './components/shared/AppHero'
@@ -18,6 +18,7 @@ Vue.component('AppDropdown', AppDropdown)
 Vue.component('AppSpinner', AppSpinner)
 
 Vue.use(vuelidate)
+Vue.use(Toasted)
 
 Vue.filter('capitalize', function (value) {
   if (!value) return ''

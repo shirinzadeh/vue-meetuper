@@ -110,7 +110,20 @@ export default {
       this.$store
         .dispatch("auth/loginWithEmailAndPassword", this.form)
         .then(() => this.$router.push("/"))
-        .catch((err) => console.log(err));
+        // .catch((err) => {
+        //   const error = err.response.data.errors.message;
+        //   //LOOK vue-toasted docs
+        //   this.$toasted.error(error, {
+        //     duration: 5000,
+        //     position: "top-center",
+        //   });
+        // });
+        .catch((errorMessage) => {
+          this.$toasted.error(errorMessage, {
+            duration: 5000,
+            position: "top-center",
+          });
+        });
     },
   },
 };

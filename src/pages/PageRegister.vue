@@ -194,10 +194,11 @@ export default {
   validations: {
     form: {
       username: {
-        required,
-        minLength: minLength(6),
+        // required,
       },
-      name: { required },
+      name: {
+        // required
+      },
       email: { required, email },
       avatar: {
         url,
@@ -221,7 +222,12 @@ export default {
         .dispatch("auth/registerUser", this.form)
         //redirect to login page after push userData (modules/auth.js)
         .then(() => this.$router.push("/login"))
-        .catch((err) => console.error(err));
+        .catch((errMessage) => {
+          this.$toasted.error(errMessage, {
+            duration: 5000,
+            position: "top-center",
+          });
+        });
     },
   },
 };
