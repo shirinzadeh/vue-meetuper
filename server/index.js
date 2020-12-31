@@ -6,15 +6,17 @@ const config = require('./config/dev');
 
 const session = require('express-session');
 const passport = require('passport');
+
+// Only For Session Authentication !
 //we need to prove express-session inside of mongodb-session adding (session)function
-const MongoDBStore = require('connect-mongodb-session')(session);
+// const MongoDBStore = require('connect-mongodb-session')(session);
 
-const store = new MongoDBStore({
-  uri: config.DB_URI,
-  collection: 'meetuperSessions'
-})
+// const store = new MongoDBStore({
+//   uri: config.DB_URI,
+//   collection: 'meetuperSessions'
+// })
 
-store.on('error', (error) => console.log(error))
+// store.on('error', (error) => console.log(error))
 
 require("./models/meetups");
 require("./models/users");
@@ -38,20 +40,22 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// Only For Session Authentication !
+
 //specify new middleware
 //we can register middleware with app.use(). We are notifying server to check for session 
 //secret is just random string according to wht you encode your section. Needs to be smth unique. That's why we create SESSION_SECRET in config
 //cookie will be storing inside of client browser
-app.use(session({
-  secret: config.SESSION_SECRET,
-  cookie: { maxAge: 3600000 },
-  resave: false,
-  saveUninitialized: false,
-  store
-}))
+// app.use(session({
+//   secret: config.SESSION_SECRET,
+//   cookie: { maxAge: 3600000 },
+//   resave: false,
+//   saveUninitialized: false,
+//   store
+// }))
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use('/api/v1/meetups', meetupsRoutes);
 app.use('/api/v1/users', usersRoutes);

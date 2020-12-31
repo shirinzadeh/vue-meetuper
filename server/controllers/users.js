@@ -18,7 +18,10 @@ exports.getCurrentUser = function (req, res, next) {
     return res.sendStatus(422);
   }
 
-  return res.json(user);
+  /**JWTden sonra kod deyisir */
+  // For Session Auth!
+  // return res.json(user);
+  return res.json(user.toAuthJSON());
 };
 
 exports.register = function (req, res) {
@@ -92,11 +95,18 @@ exports.login = function (req, res, next) {
       /*we have login() function thanks to passport. 
       After register passport.initialize() and passport.session() in index.js, login() is availabed*/
       //this will execute serialize function. we will get inside serialize(passport.js)
-      req.login(passportUser, function (err) {
-        if (err) { next(err); }
 
-        return res.json(passportUser)
-      });
+      // AFTER JWT
+      // Only For Session Auth!!!
+
+      // req.login(passportUser, function (err) {
+      //   if (err) { next(err); }
+
+      //   return res.json(passportUser)
+      // });
+      /**models/users-da toAuthJsonda daxil etdiyimiz objecti tokene cevirib tezden client side-a qaytair */
+      return res.json(passportUser.toAuthJSON())
+
     } else {
       return res.status(422).send({
         errors: {
