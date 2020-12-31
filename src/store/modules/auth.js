@@ -42,6 +42,23 @@ export default {
     registerUser(context, userData) {
       return axios.post('/api/v1/users/register', userData)
     },
+    logout({ commit }) {
+      // For Session Authnetication !
+      //deleted  bacuse we now dont need to send request to a server to remove our session
+      // return axios.post('/api/v1/users/logout')
+      //   .then((res) => {
+      //     commit('setAuthUser', null)
+      //     return true
+      //   })
+      //   .catch((err) => {
+      //     return err
+      //   })
+      return new Promise((resolve, reject) => {
+        localStorage.removeItem('meetuper-jwt')
+        commit('setAuthUser', null)
+        resolve(true)
+      })
+    },
     /**app.vue-da request gonderirik */
     /** her defe ferqli sehifelere kecende /api/v1/users/me-den login olan userin melumatini gonderir(network tabdan bax)
      * ona gore de getAuthUsere gettersi elave edirik ki eger authuser varsa, bir de axiosla get etmesin
@@ -78,16 +95,7 @@ export default {
           return err
         })
     },
-    logout({ commit }) {
-      axios.post('/api/v1/users/logout')
-        .then((res) => {
-          commit('setAuthUser', null)
-          return true
-        })
-        .catch((err) => {
-          return err
-        })
-    }
+
   },
   mutations: {
     setAuthUser(state, user) {
