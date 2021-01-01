@@ -6,14 +6,38 @@
     <!-- Form Steps -->
     <!-- meselen meetuplocation inputda nese yazib next edib, sora back edende input bos gosterir.
      cunki her defe vue yeni instance yaradir. keep-alive ile evvelki instance da oldugu kimi qalir -->
+
+    <!-- ref ile child componente, onun function ve propertylrine accessimiz olur,
+          bunun sayesinde componentlerin valid olub olmadigini yoxlayacagiq-->
     <keep-alive>
-      <MeetupLocation v-if="currentStep === 1" @stepUpdated="mergeStepData" />
-      <MeetupDetail v-if="currentStep === 2" @stepUpdated="mergeStepData" />
+      <!-- <MeetupLocation
+        v-if="currentStep === 1"
+        @stepUpdated="mergeStepData"
+        ref="currentComponent"
+      />
+      <MeetupDetail
+        v-if="currentStep === 2"
+        @stepUpdated="mergeStepData"
+        ref="currentComponent"
+      />
       <MeetupDescription
         v-if="currentStep === 3"
         @stepUpdated="mergeStepData"
+        ref="currentComponent"
       />
-      <MeetupConfirmation v-if="currentStep === 4" :meetupToCreate="form" />
+      <MeetupConfirmation v-if="currentStep === 4" :meetupToCreate="form" /> -->
+
+      <!-- https://vuejs.org/v2/guide/components.html#Dynamic-Components -->
+      <!-- <MeetupLocation /> ile <component is="MeetupLocation"/> eyni seydir. 
+      *** :is="" -i html taglarinde de istifade ederek component kimi davrandira bilirik-->
+      <!-- :is-deki currentComponent-le ref-deki currentComponent casdirmasin. cunki :is-deki variabledi.
+      ref-deki ise stringdir. cunki hec neye bind etmemisik. : isletmemisik -->
+      <component
+        :is="currentComponent"
+        @stepUpdated="mergeStepData"
+        ref="currentComponent"
+        :meetupToCreate="form"
+      />
     </keep-alive>
 
     <progress class="progress" :value="currentProgress" max="100">
@@ -30,6 +54,7 @@
       <button
         v-if="currentStep !== allStepsCount"
         @click="moveToNextStep"
+        :disabled="!canProceed"
         class="button is-primary"
       >
         Next
@@ -57,7 +82,16 @@ export default {
   data() {
     return {
       currentStep: 1,
-      allStepsCount: 4,
+      /**silinir, cunki formsteps.length vererek computed property yaradirilir */
+      // allStepsCount: 4,
+      canProceed: false,
+      formSteps: [
+        "MeetupLocation",
+        "MeetupDetail",
+        "MeetupDescription",
+        "MeetupConfirmation",
+      ],
+
       form: {
         location: null,
         title: null,
@@ -72,19 +106,39 @@ export default {
     };
   },
   computed: {
+    allStepsCount() {
+      return this.formSteps.length;
+    },
     currentProgress() {
       return (100 / this.allStepsCount) * this.currentStep;
     },
+    currentComponent() {
+      /** formsteps arrayinde componentlerin indexi 0 1 2 3dur. ama currentstep 1dir deye,
+              0dan baslamasi ucun 1 cixiriq*/
+      return this.formSteps[this.currentStep - 1];
+    },
   },
   methods: {
-    mergeStepData(stepData) {
-      this.form = { ...this.form, ...stepData };
+    mergeStepData(step) {
+      this.form = { ...this.form, ...step.data };
+      this.canProceed = step.isValid;
     },
     moveToNextStep() {
       this.currentStep++;
+
+      // https://vuejs.org/v2/api/#Vue-nextTick
+      // Defer the callback to be executed after the next DOM update cycle.
+      /**$nextTick callback function icerisindeki kod Vue update olandan sonra calisir
+          yeni, movetonextstepe klikleyen kimi islemir. nexte klikleyib, sonraki sehife acilanda bu kod isleyir
+          BELELIKLE NOVBETI SEHIFELERDEKI NEXT BUTTON DA INPUT DOLMAYIBSA DISABLE OLUR
+       */
+      this.$nextTick(() => {
+        this.canProceed = !this.$refs["currentComponent"].$v.$invalid;
+      });
     },
     moveToPreviousStep() {
       this.currentStep--;
+      this.canProceed = true;
     },
   },
 };

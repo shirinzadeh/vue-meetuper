@@ -25,7 +25,7 @@
       </div>
       <div>
         <span class="result-title"> Category </span>
-        <p>{{ meetupToCreate.category }}</p>
+        <p>{{ meetupToCreate.category.name }}</p>
       </div>
       <div>
         <span class="result-title"> Image </span>

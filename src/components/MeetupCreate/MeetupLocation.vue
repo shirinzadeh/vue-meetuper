@@ -36,7 +36,11 @@ export default {
   },
   methods: {
     emitFormData() {
-      this.$emit("stepUpdated", this.form);
+      /** inputda hec ne yazilmasa next disable olmasi ucun emitin iceriside formun invalid-in true ve ya false deyerini gonderirik*/
+      this.$emit("stepUpdated", {
+        data: this.form,
+        isValid: !this.$v.$invalid,
+      });
     },
   },
 };

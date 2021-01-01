@@ -16,13 +16,13 @@
       </div>
     </div>
     <div class="field">
-      <label class="title m-b-sm">Starts At</label>
+      <label class="title m-b-sm">Start Date</label>
       <input
         v-model="form.startDate"
         @blur="$v.form.startDate.$touch()"
         class="input"
         type="text"
-        placeholder="Starts At"
+        placeholder="Start Date"
       />
       <div v-if="$v.form.startDate.$error">
         <span v-if="!$v.form.startDate.required" class="help is-danger"
@@ -110,7 +110,10 @@ export default {
   },
   methods: {
     emitFormData() {
-      this.$emit("stepUpdated", this.form);
+      this.$emit("stepUpdated", {
+        data: this.form,
+        isValid: !this.$v.$invalid,
+      });
     },
   },
 };
