@@ -1,4 +1,5 @@
 import axios from 'axios'
+import axiosInstance from '@/services/axios'
 
 export default {
   namespaced: true,
@@ -36,6 +37,16 @@ export default {
         return state.item
       });
     },
+    createMeetup({ rootState }, meetupToCreate) {
+      /**server/models/meetup-daki meetupCreatordu */
+      //meetupCreator is authenticated user
+      meetupToCreate.meetupCreator = rootState.auth.user
+      /** regex expression yazanda - locationa Lisboan, PT yazilanda bazaya lisboanpt kimi gonderir] */
+      meetupToCreate.processedLocation = meetupToCreate.location.toLowerCase().replace(/[\s,]+/g, '').trim()
+
+      return axiosInstance.post('/api/v1/meetups', meetupToCreate)
+        .then(res => res.data)
+    }
   },
   mutations: {
 

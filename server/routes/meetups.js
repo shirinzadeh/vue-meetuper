@@ -12,7 +12,8 @@ router.get('', MeetupsCtrl.getMeetups);
   onlyAuthUser-de de we are executing authenticate and jwt strategy(controllers/auth.js COMMENTI OXU)
  */
 router.get('/secret', AuthCtrl.onlyAuthUser, MeetupsCtrl.getSecret);
-
 router.get('/:id', MeetupsCtrl.getMeetupById);
+
+router.post('', AuthCtrl.onlyAuthUser, MeetupsCtrl.createMeetup);
 
 module.exports = router;

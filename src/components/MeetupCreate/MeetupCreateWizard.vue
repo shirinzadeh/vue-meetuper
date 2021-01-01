@@ -60,10 +60,10 @@
         Next
       </button>
       <!-- Confirm Data -->
-      <button v-else class="button is-primary">Confirm</button>
+      <button @click="emitMeetupConfirm" v-else class="button is-primary">
+        Confirm
+      </button>
     </div>
-    <!-- Just To See Data in the Form -->
-    <pre><code>{{form}}</code></pre>
   </div>
 </template>
 
@@ -139,6 +139,9 @@ export default {
     moveToPreviousStep() {
       this.currentStep--;
       this.canProceed = true;
+    },
+    emitMeetupConfirm() {
+      this.$emit("meetupConfirmed", this.form);
     },
   },
 };
