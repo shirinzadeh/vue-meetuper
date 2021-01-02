@@ -122,9 +122,21 @@ export default {
     },
     addMeetupToAuthUser({ commit, state }, meetupId) {
       //getting user joinedmeetups. this will be array of meetups. for ex: ['1','2','3']
+      /** joinedMeetups-a meetupin id-sini elave edir ve userMeetupsa beraber edir. user meetups ancaq join olan meetuplarin idlerinden ibaretdir */
       const userMeetups = [...state.user['joinedMeetups'], meetupId]
       //now we have new userMeetups collection updated with meetupid we just joined, we add it to authuser
       commit('setMeetupsToAuthUser', userMeetups)
+    },
+    removeMeetupFromAuthUser({ commit, state }, meetupId) {
+      const userMeetupsIds = [...state.user['joinedMeetups']]
+      //looking for index of meetup we want remove
+      /**userMeetupIds-in her birinin, yeni iserMeetupId-nin indexine baxir. meetupId-ye beraberdise true qaytarir ve indexe beraber edir */
+      const index = userMeetupsIds.findIndex(userMeetupId => userMeetupId === meetupId)
+
+      //now we have index and can remove it
+      //starting from index and 1 element
+      userMeetupsIds.splice(index, 1)
+      commit('setMeetupsToAuthUser', userMeetupsIds)
     }
   },
   mutations: {
