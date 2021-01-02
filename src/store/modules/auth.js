@@ -28,6 +28,27 @@ export default {
       //!! this return true or false depending on state of a user
       /** if uesr is null this will return false, if user has value yeni authenticatedç this üill return true */
       return !!state.user
+    },
+    //this means getter returns meetupCreatorId function - ES6 syntax
+    /*isMeetupOwner: function(state) {
+      return function(meetupCreatorId) {}
+    }*/
+    isMeetupOwner: (state) => (meetupCreatorId) => {
+      //if user is not present in state, return false
+      //this function means i am not meetup owner if don't have user in state
+      if (!state.user) return false
+      return state.user._id === meetupCreatorId
+    },
+    isMember: (state) => (meetupId) => {
+      /** deyek ki user.joinedMeetups = [1, 2. 3]. biz de meetupId functionda 2ni aliriq. 
+          evvel baxir ki user var ya yox, sonra joinedmeetup olub olmamagina baxir, sonra da joinedmeetupda da 2 varsa true return edir
+          bu da demekdi ki, member-em ve meetup-a join ede bilerem*/
+
+      /** app-de login ol, basqasinin yaratdigi ve ya oz meetup-ina gir, vue instance PageMeetupDetail klikle, 
+          computed propertylerde true falselara bax, basa dusersen*/
+      return state.user &&
+        state.user['joinedMeetups'] &&
+        state.user['joinedMeetups'].includes(meetupId)
     }
   },
   actions: {
@@ -98,7 +119,12 @@ export default {
           return err
         })
     },
-
+    addMeetupToAuthUser({ commit, state }, meetupId) {
+      //getting user joinedmeetups. this will be array of meetups. for ex: ['1','2','3']
+      const userMeetups = [...state.user['joinedMeetups'], meetupId]
+      //now we have new userMeetups collection updated with meetupid we just joined, we add it to authuser
+      commit('setMeetupsToAuthUser', userMeetups)
+    }
   },
   mutations: {
     setAuthUser(state, user) {
@@ -106,6 +132,10 @@ export default {
     },
     setAuthState(state, authState) {
       return state.isAuthResolved = authState
+    },
+    setMeetupsToAuthUser(state, meetups) {
+      //we add meetups to state.user under key joinedMeetups
+      return Vue.set(state.user, 'joinedMeetups', meetups)
     }
   }
 }

@@ -17,6 +17,9 @@
     </div>
     <div class="field">
       <label class="title m-b-sm">Start Date</label>
+      <!-- :disabledDates is vuejs-datepicker variable
+          :value="" inputda bu gunku gunu gostermesi ucun
+          bind olan variablelar vue-js datepickerindi -->
       <datepicker
         @input="setDate"
         :disabledDates="disabledDates"
@@ -88,6 +91,8 @@ export default {
     return {
       disabledDates: {
         customPredictor: function (date) {
+          //vuejs-datepicker function to disable dates
+          /**bugunku gunu de disable etmemesi ucundur bu kod*/
           const today = new Date();
           const yesterday = today.setDate(today.getDate() - 1);
           return date < yesterday;

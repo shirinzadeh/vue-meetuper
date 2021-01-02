@@ -23,7 +23,7 @@
         </div>
         <div class="is-pulled-right">
           <!-- We will handle this later (: -->
-          <button class="button is-danger">Leave Group</button>
+          <button v-if="isMember" class="button is-danger">Leave Meetup</button>
         </div>
       </div>
     </section>
@@ -85,11 +85,21 @@
             <div class="content is-medium">
               <h3 class="title is-3">About the Meetup</h3>
               <p>{{ meetup.description }}</p>
-              <!-- Join Meetup, We will handle it later (: -->
-              <button class="button is-primary">Join In</button>
-              <!-- Not logged In Case, handle it later (: -->
-              <!-- <button :disabled="true"
-                      class="button is-warning">You need authenticate in order to join</button> -->
+              <button
+                v-if="canJoin"
+                @click="joinMeetup"
+                class="button is-primary"
+              >
+                Join In
+              </button>
+              <!-- Not logged In Case -->
+              <button
+                v-if="!isAuthenticated"
+                :disabled="true"
+                class="button is-warning"
+              >
+                You need authenticate in order to join
+              </button>
             </div>
             <!-- Thread List START -->
             <div class="content is-medium">
@@ -175,6 +185,19 @@ export default {
     meetupCreator() {
       return this.meetup.meetupCreator || {};
     },
+    isAuthenticated() {
+      return this.$store.getters["auth/isAuthenticated"];
+    },
+    isMeetupOwner() {
+      return this.$store.getters["auth/isMeetupOwner"](this.meetupCreator._id);
+    },
+    isMember() {
+      //we check if user has meetup in joinedMeetup (modules/users). this means i am already member
+      return this.$store.getters["auth/isMember"](this.meetup._id);
+    },
+    canJoin() {
+      return !this.isMeetupOwner && this.isAuthenticated && !this.isMember;
+    },
   },
   created() {
     // By injecting the router, we get access to it as this.$router as well as the current route as this.$route inside of any component
@@ -191,6 +214,9 @@ export default {
   methods: {
     ...mapActions("meetups", ["fetchMeetupById"]),
     ...mapActions("threads", ["fetchThreads"]),
+    joinMeetup() {
+      this.$store.dispatch("meetups/joinMeetup", this.meetup._id);
+    },
   },
 };
 </script>
