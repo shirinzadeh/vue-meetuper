@@ -101,6 +101,12 @@
               >
                 You need authenticate in order to join
               </button>
+              <ThreadCreateModal
+                v-if="isMember || isMeetupOwner"
+                @threadSubmitted="createThread"
+                :btnTitle="`Welcome ${authUser.username}, Start a new thread`"
+                :title="'Create Thread'"
+              />
             </div>
             <!-- Thread List START -->
             <div class="content is-medium">
@@ -163,9 +169,13 @@
 
 <script>
 // import axios from "axios"; Vuexden sonra ehtiyac yoxdur
+import ThreadCreateModal from "@/components/ThreadCreateModal";
 import { mapActions, mapState } from "vuex";
 
 export default {
+  components: {
+    ThreadCreateModal,
+  },
   // data() {
   //   return {
   //     meetup: {},
@@ -182,6 +192,7 @@ export default {
     ...mapState({
       meetup: (state) => state.meetups.item,
       threads: (state) => state.threads.items,
+      authUser: (state) => state.auth.user,
     }),
     meetupCreator() {
       return this.meetup.meetupCreator || {};
@@ -214,12 +225,17 @@ export default {
   },
   methods: {
     ...mapActions("meetups", ["fetchMeetupById"]),
-    ...mapActions("threads", ["fetchThreads"]),
+    ...mapActions("threads", ["fetchThreads", "postThread"]),
     joinMeetup() {
       this.$store.dispatch("meetups/joinMeetup", this.meetup._id);
     },
     leaveMeetup() {
       this.$store.dispatch("meetups/leaveMeetup", this.meetup._id);
+    },
+    createThread({ title, done }) {
+      this.postThread({ title, meetupId: this.meetup._id }).then(() => {
+        done();
+      });
     },
   },
 };
