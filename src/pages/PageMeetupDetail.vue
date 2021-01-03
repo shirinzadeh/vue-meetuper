@@ -62,7 +62,10 @@
               <!-- Threads Start -->
               <p class="menu-label">Threads</p>
               <ul>
-                <li v-for="thread in threads" :key="thread._id">
+                <!-- <li v-for="thread in threads" :key="thread._id">
+                  {{ thread.title }}
+                </li> -->
+                <li v-for="thread in orderedThreads" :key="thread._id">
                   {{ thread.title }}
                 </li>
               </ul>
@@ -111,7 +114,12 @@
             <!-- Thread List START -->
             <div class="content is-medium">
               <h3 class="title is-3">Threads</h3>
-              <div v-for="thread in threads" :key="thread._id" class="box">
+              <!-- <div v-for="thread in threads" :key="thread._id" class="box"> -->
+              <div
+                v-for="thread in orderedThreads"
+                :key="thread._id"
+                class="box"
+              >
                 <!-- Thread title -->
                 <h4 id="const" class="title is-3">
                   {{ thread.title }}
@@ -210,6 +218,23 @@ export default {
     canJoin() {
       return !this.isMeetupOwner && this.isAuthenticated && !this.isMember;
     },
+    //Ordering threads
+    /**en son yazilan threadler en basda gorsenir */
+    orderedThreads() {
+      /** copy yaratmayanda, threads.sort() olanda side-effect erroru verir.
+       * //side effect means i'm mutating my original value
+       */
+      //******** DESTRUCTURIZINGDE PROBLEM VAR. ERROR VERIR *************/
+      const copyOfThreads = [...this.threads];
+      return copyOfThreads.sort((thread, nextThread) => {
+        /** nextThread-de qebul etdiyimiz date-i, actual dates objectine transform edirik */
+        return new Date(nextThread.createdAt) - new Date(thread.createdAt);
+        /**meselen bele bir arrayimiz var dates=[3,7,1,4] 
+           function(compare(a,b) => b - a) 
+           dates.sort(compare) ---> netice [7,4,3,1] olacaq
+        */
+      });
+    },
   },
   created() {
     // By injecting the router, we get access to it as this.$router as well as the current route as this.$route inside of any component
@@ -233,7 +258,10 @@ export default {
       this.$store.dispatch("meetups/leaveMeetup", this.meetup._id);
     },
     createThread({ title, done }) {
-      this.postThread({ title, meetupId: this.meetup._id }).then(() => done());
+      this.postThread({ title, meetupId: this.meetup._id }).then(() => {
+        this.$toasted.success("Thread Succesfuly Created!", { duration: 3000 });
+        done();
+      });
     },
   },
 };
