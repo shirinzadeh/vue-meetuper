@@ -233,9 +233,7 @@ export default {
       this.$store.dispatch("meetups/leaveMeetup", this.meetup._id);
     },
     createThread({ title, done }) {
-      this.postThread({ title, meetupId: this.meetup._id }).then(() => {
-        done();
-      });
+      this.postThread({ title, meetupId: this.meetup._id }).then(() => done());
     },
   },
 };
