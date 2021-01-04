@@ -88,4 +88,11 @@ export default {
     font-size: 16px;
   }
 }
+//POST CREATE INPUT
+.textarea-post {
+  padding-bottom: 30px;
+}
+.post-create {
+  margin-bottom: 15px;
+}
 </style>

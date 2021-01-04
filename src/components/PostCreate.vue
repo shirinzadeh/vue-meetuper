@@ -1,7 +1,9 @@
 <template>
+  <!-- <textarea v-with-warning:red.prevent="'what a nice day'" class="post-create"></textarea> -->
   <form class="post-create">
     <div class="field">
       <textarea
+        v-auto-expand
         class="textarea textarea-post"
         placeholder="Write a post"
         rows="1"
@@ -12,7 +14,12 @@
 </template>
 
 <script>
-export default {};
+import withWarning from "@/directives/withWarning";
+import autoExpand from "@/directives/autoExpand";
+
+export default {
+  directives: { autoExpand },
+};
 </script>
 
 <style scoped lang="scss">
