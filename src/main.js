@@ -3,7 +3,8 @@ import App from './App.vue'
 import router from './router'/**faylin adi index.js olduguna gore, ./router/index.js yazmaga ehtiyac yoxdur. cunki avtomatik import edir */
 import store from './store'
 import vuelidate from 'vuelidate'
-import Toasted from 'vue-toasted';
+import Toasted from 'vue-toasted'
+import io from 'socket.io-client'
 
 import AppDropdown from './components/shared/AppDropdown'
 import AppHero from './components/shared/AppHero'
@@ -36,7 +37,15 @@ Vue.filter('formatDate', function (value, formatType = "LL") {
   return moment(value).format(formatType)
 })
 
+// io('http://localhost:3001')
+const socket = io('http://localhost:3001')
+
 new Vue({
+  data() {
+    return {
+      socket
+    }
+  },
   router,
   store,
   vuelidate,

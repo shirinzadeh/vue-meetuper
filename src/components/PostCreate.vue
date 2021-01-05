@@ -45,7 +45,8 @@ export default {
           threadId: this.threadId,
         })
         /**then() elave olunmayanda yazilan postu bir nece defe gonderir */
-        .then(() => {
+        .then((createdPost) => {
+          this.$root.socket.emit("meetup/postSave", createdPost);
           this.text = "";
         });
     },

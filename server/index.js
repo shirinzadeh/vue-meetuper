@@ -37,6 +37,20 @@ mongoose.connect(config.DB_URI, { useNewUrlParser: true })
   .catch(err => console.log(err));
 
 const app = express();
+//create server inside application
+const server = require('http').createServer(app)
+//when server don't get response in 60seconds, the connection will bi considered as a fail and connection will be closed
+//when connection 
+const io = require('socket.io')(server, { pingTimeout: 60000 })
+
+/**socket/index-e kecirdik */
+//listen to connection
+// io.on('connection', function (socket) {
+//   console.log('connection has been established')
+// })
+
+//passing io instance to our socket/index.js file
+require('./socket')(io)
 
 app.use(bodyParser.json());
 
@@ -65,6 +79,6 @@ app.use('/api/v1/categories', categoriesRoutes);
 
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, function () {
+server.listen(PORT, function () {
   console.log('App is running on port: ' + PORT);
 });

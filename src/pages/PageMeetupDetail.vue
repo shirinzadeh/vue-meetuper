@@ -197,6 +197,13 @@ export default {
     // this.$store.dispatch("fetchThreads", meetupId);
     this.fetchMeetupById(meetupId);
     this.fetchThreads(meetupId);
+
+    //subscribing to event coming from server(socket/index)
+    //listening to event on all of our clients
+    this.$root.socket.on("meetup/postPublished", function (post) {
+      alert(post.text);
+      console.log(post.text);
+    });
   },
   methods: {
     ...mapActions("meetups", ["fetchMeetupById"]),
